@@ -1,9 +1,10 @@
-import { auth } from "./firebaseConfig";
+import { auth, db } from "./firebaseConfig";
 import { Modal } from "materialize-css/dist/js/materialize.min.js";
 
 // DOM elems
 const signupForm = document.querySelector("#signup-form"),
-  logout = document.querySelector("#logout");
+  logout = document.querySelector("#logout"),
+  loginForm = document.querySelector("#login-form");
 
 // Signup
 const signupUser = () =>
@@ -24,11 +25,48 @@ const signupUser = () =>
     });
   });
 
+//   Sign out
 const signOutUser = () =>
   logout.addEventListener("click", e => {
     e.preventDefault();
     // Sign out user
-    auth.signOut().then(() => console.log("User logged out"));
+    auth.signOut();
   });
 
-export { signupUser, signOutUser };
+//   Login
+const login = () =>
+  loginForm.addEventListener("submit", e => {
+    e.preventDefault();
+
+    // User info
+    const email = loginForm["login-email"].value,
+      password = loginForm["login-password"].value;
+
+    //   log user in
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(data => {
+        const modal = document.querySelector("#modal-login");
+        Modal.getInstance(modal).close();
+        loginForm.reset();
+      })
+      .catch(err => console.error(err));
+  });
+
+const authState = () =>
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      console.log("user logged in", user);
+    } else {
+      console.log("user logged out");
+    }
+  });
+
+const fetchGuides = cb =>
+  db
+    .collection("guides")
+    .get()
+    .then(snapshot => cb(snapshot.docs))
+    .catch(err => console.log(err));
+
+export { signupUser, signOutUser, login, authState, fetchGuides };
