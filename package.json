@@ -1,0 +1,25 @@
+{
+  "name": "game-guides",
+  "version": "1.0.0",
+  "description": "Firebase authentication app",
+  "main": "app.js",
+  "scripts": {
+    "dev": "parcel public/index.html"
+  },
+  "keywords": [
+    "firebase",
+    "firestore",
+    "firebase-auth"
+  ],
+  "author": "Mohammad mohiuddin mostafa kamal akib",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^9.4.8",
+    "parcel-bundler": "^1.11.0"
+  },
+  "dependencies": {
+    "jqeury": "^1.0.0",
+    "jquery": "^3.3.1",
+    "materialize-css": "^1.0.0-rc.2"
+  }
+}
