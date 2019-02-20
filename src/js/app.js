@@ -3,7 +3,7 @@ window.$ = window.jQuery = $;
 import "materialize-css/dist/css/materialize.min.css";
 import "../css/style.css";
 import "materialize-css/dist/js/materialize.min.js";
-import { db, auth } from "./auth";
+import { db, auth } from "./firebaseConfig";
 
 // setup materialize components
 document.addEventListener("DOMContentLoaded", function() {
