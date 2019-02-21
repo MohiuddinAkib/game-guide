@@ -46,8 +46,7 @@ const authState = cb => auth.onAuthStateChanged(user => cb(user));
 const fetchGuides = cb =>
   db
     .collection("guides")
-    .get()
-    .then(snapshot => cb(snapshot.docs))
+    .onSnapshot(snapshot => cb(snapshot.docs))
     .catch(err => console.log(err));
 
 // Create guide
