@@ -34,7 +34,7 @@ const signOutUser = () =>
   });
 
 //   Login
-const login = () =>
+const loginUser = () =>
   loginForm.addEventListener("submit", e => {
     e.preventDefault();
 
@@ -53,14 +53,7 @@ const login = () =>
       .catch(err => console.error(err));
   });
 
-const authState = () =>
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      console.log("user logged in", user);
-    } else {
-      console.log("user logged out");
-    }
-  });
+const authState = cb => auth.onAuthStateChanged(user => cb(user));
 
 const fetchGuides = cb =>
   db
@@ -69,4 +62,4 @@ const fetchGuides = cb =>
     .then(snapshot => cb(snapshot.docs))
     .catch(err => console.log(err));
 
-export { signupUser, signOutUser, login, authState, fetchGuides };
+export { signupUser, signOutUser, loginUser, authState, fetchGuides };
