@@ -2,59 +2,47 @@ import { auth, db } from "./firebaseConfig";
 import { Modal } from "materialize-css/dist/js/materialize.min.js";
 
 // DOM elems
-const signupForm = document.querySelector("#signup-form"),
-  logout = document.querySelector("#logout"),
-  loginForm = document.querySelector("#login-form");
+import { signupForm, loginForm, createForm } from "./DOMElems";
+
+const closeModal = id => {
+  const modal = document.querySelector(id);
+  //   close modal
+  Modal.getInstance(modal).close();
+};
 
 // Signup
-const signupUser = () =>
-  signupForm.addEventListener("submit", e => {
-    e.preventDefault();
-
-    //   Get user info
-    const email = signupForm["signup-email"].value,
-      password = signupForm["signup-password"].value;
-
-    //   Sign up the user
-    auth.createUserWithEmailAndPassword(email, password).then(cred => {
-      const modal = document.querySelector("#modal-signup");
+const signupUser = payload =>
+  //   Sign up the user
+  auth
+    .createUserWithEmailAndPassword(payload.email, payload.password)
+    .then(cred => {
       //   close modal
-      Modal.getInstance(modal).close();
+      closeModal("#modal-signup");
       //   reset form
       signupForm.reset();
     });
-  });
 
 //   Sign out
 const signOutUser = () =>
-  logout.addEventListener("click", e => {
-    e.preventDefault();
-    // Sign out user
-    auth.signOut();
-  });
+  // Sign out user
+  auth.signOut();
 
 //   Login
-const loginUser = () =>
-  loginForm.addEventListener("submit", e => {
-    e.preventDefault();
+const loginUser = payload =>
+  //   log user in
+  auth
+    .signInWithEmailAndPassword(payload.email, payload.password)
+    .then(data => {
+      // close modal
+      closeModal("#modal-login");
+      loginForm.reset();
+    })
+    .catch(err => console.error(err));
 
-    // User info
-    const email = loginForm["login-email"].value,
-      password = loginForm["login-password"].value;
-
-    //   log user in
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then(data => {
-        const modal = document.querySelector("#modal-login");
-        Modal.getInstance(modal).close();
-        loginForm.reset();
-      })
-      .catch(err => console.error(err));
-  });
-
+// Checks auth state
 const authState = cb => auth.onAuthStateChanged(user => cb(user));
 
+// Fetch all guides
 const fetchGuides = cb =>
   db
     .collection("guides")
@@ -62,4 +50,25 @@ const fetchGuides = cb =>
     .then(snapshot => cb(snapshot.docs))
     .catch(err => console.log(err));
 
-export { signupUser, signOutUser, loginUser, authState, fetchGuides };
+// Create guide
+const createGuide = () =>
+  db
+    .collection("guides")
+    .add({
+      title: createForm["title"].value,
+      content: createForm["content"].value
+    })
+    .then(() => {
+      closeModal("#modal-create");
+      createForm.reset();
+    })
+    .catch(err => console.log(err));
+
+export {
+  signupUser,
+  signOutUser,
+  loginUser,
+  authState,
+  fetchGuides,
+  createGuide
+};

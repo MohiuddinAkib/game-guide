@@ -6,12 +6,49 @@ import {
   signOutUser,
   loginUser,
   authState,
-  fetchGuides
+  fetchGuides,
+  createGuide
 } from "./auth";
 
-const guideList = document.querySelector(".guides"),
-  loggedOutLinks = document.querySelectorAll(".logged-out"),
-  loggedInLinks = document.querySelectorAll(".logged-in");
+// DOM elems
+import {
+  signupForm,
+  logout,
+  loginForm,
+  guideList,
+  loggedOutLinks,
+  loggedInLinks,
+  createForm
+} from "./DOMElems";
+
+// Signup
+signupForm.addEventListener("submit", e => {
+  e.preventDefault();
+  //   Get user info
+  const email = signupForm["signup-email"].value,
+    password = signupForm["signup-password"].value;
+  //   Sign up the user
+  signupUser({ email, password });
+});
+
+//   Sign out
+logout.addEventListener("click", e => {
+  e.preventDefault();
+  // Sign out user
+  signOutUser();
+});
+
+//   Login
+loginForm.addEventListener("submit", e => {
+  e.preventDefault();
+
+  // User info
+  const email = loginForm["login-email"].value,
+    password = loginForm["login-password"].value;
+
+  //   log user in
+  loginUser({ email, password });
+});
 
 const setupUI = user => {
   if (user) {
@@ -43,6 +80,12 @@ const setupGuides = data => {
   }
 };
 
+// Create guide
+createForm.addEventListener("submit", e => {
+  e.preventDefault();
+  createGuide();
+});
+
 // setup materialize components
 document.addEventListener("DOMContentLoaded", function() {
   var modals = document.querySelectorAll(".modal");
@@ -51,9 +94,6 @@ document.addEventListener("DOMContentLoaded", function() {
   var items = document.querySelectorAll(".collapsible");
   Collapsible.init(items);
 
-  signupUser();
-  signOutUser();
-  loginUser();
   authState(user => {
     if (user) {
       guideList.innerHTML = "<h5 class='center-align'>Loading...</h5>";
