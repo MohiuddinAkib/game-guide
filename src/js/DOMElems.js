@@ -4,4 +4,5 @@ export const signupForm = document.querySelector("#signup-form"),
   createForm = document.querySelector("#create-form"),
   guideList = document.querySelector(".guides"),
   loggedOutLinks = document.querySelectorAll(".logged-out"),
-  loggedInLinks = document.querySelectorAll(".logged-in");
+  loggedInLinks = document.querySelectorAll(".logged-in"),
+  accountDetails = document.querySelector(".account-details");

@@ -18,17 +18,20 @@ import {
   guideList,
   loggedOutLinks,
   loggedInLinks,
-  createForm
+  createForm,
+  accountDetails
 } from "./DOMElems";
+import { db } from "./firebaseConfig";
 
 // Signup
 signupForm.addEventListener("submit", e => {
   e.preventDefault();
   //   Get user info
   const email = signupForm["signup-email"].value,
-    password = signupForm["signup-password"].value;
+    password = signupForm["signup-password"].value,
+    bio = signupForm["signup-bio"].value;
   //   Sign up the user
-  signupUser({ email, password });
+  signupUser({ email, password, bio });
 });
 
 //   Sign out
@@ -55,10 +58,26 @@ const setupUI = user => {
     // Toggle UI elems
     loggedInLinks.forEach(item => (item.style.display = "block"));
     loggedOutLinks.forEach(item => (item.style.display = "none"));
+
+    // Account info
+    accountDetails.innerHTML = "<div>Loading..</div>";
+    db.collection("users")
+      .doc(user.uid)
+      .get()
+      .then(doc => {
+        const html = `
+        <div>Logged in as ${user.email}</div>
+        <div>${doc.data().bio}</div>
+      `;
+        accountDetails.innerHTML = html;
+      })
+      .catch(err => console.error(err));
   } else {
     // Toggle UI elems
     loggedInLinks.forEach(item => (item.style.display = "none"));
     loggedOutLinks.forEach(item => (item.style.display = "block"));
+    // Hide account info
+    accountDetails.innerHTML = "";
   }
 };
 
@@ -68,7 +87,6 @@ const setupGuides = data => {
     let html = "";
     data.forEach(doc => {
       const guide = doc.data();
-      console.log(guide);
       html += `<li>
         <div class="collapsible-header grey lighten-4">${guide.title}</div>
         <div class="collapsible-body white">${guide.content}</div>

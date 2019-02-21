@@ -15,7 +15,15 @@ const signupUser = payload =>
   //   Sign up the user
   auth
     .createUserWithEmailAndPassword(payload.email, payload.password)
-    .then(cred => {
+    .then(cred =>
+      db
+        .collection("users")
+        .doc(cred.user.uid)
+        .set({
+          bio: payload.bio
+        })
+    )
+    .then(() => {
       //   close modal
       closeModal("#modal-signup");
       //   reset form
@@ -46,8 +54,7 @@ const authState = cb => auth.onAuthStateChanged(user => cb(user));
 const fetchGuides = cb =>
   db
     .collection("guides")
-    .onSnapshot(snapshot => cb(snapshot.docs))
-    .catch(err => console.log(err));
+    .onSnapshot(snapshot => cb(snapshot.docs), err => console.log(err.message));
 
 // Create guide
 const createGuide = () =>
